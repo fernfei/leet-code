@@ -1,0 +1,175 @@
+#!/bin/bash
+
+# 应用名称（不用加.jar后缀）
+APP_NAME=application-server
+
+# springboot 环境参数
+SPRING_PROFILES_ACTIVE=prod
+
+# 指定JDK目录
+# export JDK_HOME=/usr/java/jdk-11.0.10
+export JDK_HOME=/usr/local/jdk1.8.0_161
+
+# 脚本所在路径
+SCRIPT_PATH=$(pwd)
+# 应用所在路径名
+APP_PATH=$SCRIPT_PATH/$APP_NAME
+# 日志路径
+LOG_PATH=$SCRIPT_PATH/logs/log_$APP_NAME.log
+# 是否查看日志
+IS_LOG=$2
+
+# JAVA参数
+JAVA_OPTS="-Dappname=$APP_NAME"
+JAVA_OPTS="${JAVA_OPTS} -Dspring.profiles.active=${SPRING_PROFILES_ACTIVE} "
+JAVA_OPTS="${JAVA_OPTS} -Xms1G -Xmx1G"
+# JAVA_OPTS="${JAVA_OPTS} -XX:NewSize=100M -XX:MaxNewSize=100M"
+# JAVA_OPTS="${JAVA_OPTS} -XX:MetaspaceSize=64M"
+JAVA_OPTS="${JAVA_OPTS} -XX:+HeapDumpOnOutOfMemoryError"
+#JAVA_OPTS="${JAVA_OPTS} -XX:+PrintGCDetails"
+#JAVA_OPTS="${JAVA_OPTS} -XX:-PrintConcurrentLocks"
+JAVA_OPTS="${JAVA_OPTS} -XX:-OmitStackTraceInFastThrow"
+
+#######################  JMX  ########################
+
+# JAVA_OPTS="${JAVA_OPTS} -Dcom.sun.management.jmxremote"
+# 主机IP地址
+# JAVA_OPTS="${JAVA_OPTS} -Djava.rmi.server.hostname=47.114.99.233"
+# JAVA_OPTS="${JAVA_OPTS} -Dcom.sun.management.jmxremote.port=10086"
+# JAVA_OPTS="${JAVA_OPTS} -Dcom.sun.management.jmxremote.rmi.port=10086"
+# JAVA_OPTS="${JAVA_OPTS} -Dcom.sun.management.jmxremote.ssl=false"
+# 是否需要鉴权
+# JAVA_OPTS="${JAVA_OPTS} -Dcom.sun.management.jmxremote.authenticate=false"
+# 需要鉴权，添加下面两项
+# JAVA_OPTS="${JAVA_OPTS} -Dcom.sun.management.jmxremote.password.file=./jmxremote.password"
+# JAVA_OPTS="${JAVA_OPTS} -Dcom.sun.management.jmxremote.access.file=./jmxremote.access"
+
+#####################################################
+
+#######################  GC  ########################
+
+# 单核使用
+# JAVA_OPTS="${JAVA_OPTS} -XX:+UseSerialGC"
+
+# 多核使用
+# JAVA_OPTS="${JAVA_OPTS} -XX:+UseParallelGC"
+
+# 多核、对单次STW敏感使用，会有内存碎片
+# JAVA_OPTS="${JAVA_OPTS} -XX:+UseConcMarkSweepGC"
+
+# 大内存，STW敏感使用
+JAVA_OPTS="${JAVA_OPTS} -XX:+UseG1GC"
+
+#####################################################
+
+# 获取项目进程号
+PID=$(ps -ef | grep -w java | grep -w $APP_PATH | grep -v grep | awk '{print $2}')
+
+# 启动进程
+function start() {
+  if [ "$PID" != "" ]; then
+    echo -e "\e[1;36m${APP_NAME}\e[0m (pid:\e[1;35m${PID}\e[0m) is \e[1;32mrunning\e[0m."
+  else
+    echo -e "start up \e[1;36m${APP_NAME}\e[0m..."
+    # 判断日志文件是否存在，存在则备份之前的日志
+    #if [ -f "$LOG_PATH" ]; then
+    #  mv $LOG_PATH ${LOG_PATH}.$(date +%Y-%m-%d)_$(date +%H%M%S)
+    #fi
+    touch $LOG_PATH
+    nohup ${JDK_HOME}/bin/java -jar $JAVA_OPTS ${APP_PATH}.jar > ${LOG_PATH} 2>&1 &
+    PID=$(ps -ef | grep -w java | grep -w $APP_NAME | grep -v grep | awk '{print $2}')
+    echo -e "start up \e[1;36m${APP_NAME}\e[0m (pid:\e[1;35m${PID}\e[0m) success."
+
+    if [ "$IS_LOG" = "log" ]; then
+      log
+    fi
+  fi
+}
+
+# 停止进程
+function stop() {
+  if [ "$PID" != "" ]; then
+    echo -e "stop \e[1;36m${APP_NAME}\e[0m (pid:\e[1;35m${PID}\e[0m)..."
+    kill -15 $PID
+    WAIT_TIME=1
+    while [ "$PID" != "" ]; do
+      echo -e "\e[1;36m${APP_NAME}\e[0m (pid:\e[1;35m${PID}\e[0m) is stoping...$WAIT_TIME"
+
+      if [ $WAIT_TIME == 30 ]; then
+        echo -e "force stop \e[1;36m${APP_NAME}\e[0m (pid:\e[1;35m${PID}\e[0m) !!!"
+        kill -9 $PID
+      fi
+
+      sleep 2
+
+      ((WAIT_TIME++))
+
+      PID=$(ps -ef | grep -w java | grep -w $APP_NAME | grep -v grep | awk '{print $2}')
+    done
+    echo -e "stop \e[1;36m${APP_NAME}\e[0m success."
+  else
+    echo -e "\e[1;36m${APP_NAME}\e[0m (pid:\e[1;35m${PID}\e[0m) is \e[1;31mstopped\e[0m."
+  fi
+}
+
+# 重启进程
+function restart() {
+  stop
+  sleep 1
+  start
+}
+
+# 查看进程状态
+function status() {
+  if [ "$PID" != "" ]; then
+    echo -e "\e[1;36m${APP_NAME}\e[0m (pid:\e[1;35m${PID}\e[0m) is \e[1;32mrunning\e[0m."
+  else
+    echo -e "\e[1;36m${APP_NAME}\e[0m is \e[1;31mstopped\e[0m."
+  fi
+}
+
+# 查看进程日志
+function log() {
+  exec tail -n 50 -f ${SCRIPT_PATH}/logs/running.log
+}
+
+# 显示帮助信息
+function help() {
+  echo "Java service control script."
+  echo "Usage: $0 [options] [log]"
+  echo "Options: "
+  echo "  start     start the service"
+  echo "  stop      stop the service"
+  echo "  status    view the current status of the service"
+  echo "  restart   restart the service"
+  echo "  log       view service log"
+  echo "Run '$0 help' for more information on a command."
+}
+
+case $1 in
+start)
+  start
+  ;;
+stop)
+  stop
+  ;;
+restart)
+  restart
+  ;;
+status)
+  status
+  ;;
+log)
+  log
+  ;;
+help)
+  help
+  ;;
+*)
+  help
+  exit 2
+;;
+
+esac
+
+# by ichaoge

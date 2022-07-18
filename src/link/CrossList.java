@@ -1,5 +1,7 @@
 package link;
 
+import java.util.HashSet;
+
 /**
  * 给你两个单链表的头节点 headA 和 headB ，请你找出并返回两个单链表相交的起始节点。如果两个链表不存在相交节点，返回 null 。
  * <p>
@@ -51,14 +53,10 @@ public class CrossList {
 //        System.out.printf("");
         ListNode node1 = new ListNode(1);
         ListNode node2 = new ListNode(2);
-        ListNode node3 = new ListNode(3);
-        ListNode node4 = new ListNode(3);
-        ListNode node5 = new ListNode(6);
         node1.next = node2;
-        node2.next = node3;
-        node3.next = node4;
-        node4.next = node5;
-        ListNode listNode = removeElements(node1, 3);
+//        ListNode listNode = removeElements2(node1, 7);
+//        ListNode listNode1 = reverseList2(node1);
+        isPalindrome(node1);
         System.out.println();
     }
 
@@ -124,6 +122,13 @@ public class CrossList {
         return tempA;
     }
 
+    /**
+     * 删除链表指定元素
+     *
+     * @param head 链表
+     * @param val  元素
+     * @return 删除后的链表
+     */
     public static ListNode removeElements(ListNode head, int val) {
         // 1 2 3 3 6
         if (head == null) {
@@ -134,5 +139,90 @@ public class CrossList {
             head = head.next;
         }
         return head;
+    }
+
+    /**
+     * 删除链表指定元素 迭代方式
+     * @param head
+     * @param val
+     * @return
+     */
+    public static ListNode removeElements2(ListNode head, int val) {
+        if (head == null) {
+            return null;
+        }
+        ListNode dummyHead = new ListNode(0);
+        dummyHead.next = head;
+        // 0 7 7 7 7 === 1 3 4 5
+        ListNode curNode = dummyHead;
+        while (curNode.next != null) {
+            if (curNode.next.val == val) {
+                curNode.next = curNode.next.next;
+            } else {
+                curNode = curNode.next;
+            }
+        }
+        return dummyHead.next;
+    }
+
+    /**
+     * 反转链表
+     *
+     * @param head 链表
+     * @return 结果
+     */
+    public static ListNode reverseList(ListNode head) {
+        // 1 2 3 4 5
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode newHead = reverseList(head.next);
+        //制造成环形链表 head = 4 5 4 5 ... newHead = 5 4 5 4 5 4 ...
+        head.next.next = head;
+        // 因为newHead和head指向的是同一个引用地址 所以改变head就会改变newHead
+        // head变成 val = 4 next =null newHead变成 val = 5 next = 4
+        head.next = null;
+        return newHead;
+    }
+
+    public static ListNode reverseList2(ListNode head) {
+        // 1 2 3 4 5
+        ListNode curNode = head;
+        ListNode preNode = null;
+        while (curNode != null) {
+            ListNode nextNode = curNode.next;
+            curNode.next = preNode;
+            preNode = curNode;
+            curNode = nextNode;
+        }
+        return preNode;
+    }
+
+    public static boolean isPalindrome(ListNode head) {
+        if (head == null || head.next == null) {
+            return true;
+        }
+        HashSet<Integer> hashSet = new HashSet<>();
+        int size = 0;
+        ListNode curNode = head;
+        while (curNode != null) {
+            size++;
+            curNode = curNode.next;
+        }
+        int mid = size / 2 + 1;
+        int index = 0;
+        // 1 2  1
+        while (head != null) {
+            index++;
+            if (index != mid && (size & 1) == 1) {
+                continue;
+            }
+            if (!hashSet.add(head.val)) {
+                hashSet.remove(head.val);
+            }
+            System.out.println(head.val);
+            head = head.next;
+        }
+        return hashSet.isEmpty();
     }
 }

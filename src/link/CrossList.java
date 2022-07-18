@@ -163,6 +163,7 @@ public class CrossList {
             }
         }
         return dummyHead.next;
+
     }
 
     /**

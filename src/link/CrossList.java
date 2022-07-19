@@ -1,6 +1,7 @@
 package link;
 
 import java.util.HashSet;
+import java.util.List;
 
 /**
  * 给你两个单链表的头节点 headA 和 headB ，请你找出并返回两个单链表相交的起始节点。如果两个链表不存在相交节点，返回 null 。
@@ -53,10 +54,14 @@ public class CrossList {
 //        System.out.printf("");
         ListNode node1 = new ListNode(1);
         ListNode node2 = new ListNode(2);
+//        ListNode node3 = new ListNode(2);
+        ListNode node4 = new ListNode(1);
         node1.next = node2;
+//        node2.next = node3;
+        node2.next = node4;
 //        ListNode listNode = removeElements2(node1, 7);
 //        ListNode listNode1 = reverseList2(node1);
-        isPalindrome(node1);
+        boolean palindrome = isPalindrome(node1);
         System.out.println();
     }
 
@@ -200,30 +205,33 @@ public class CrossList {
     }
 
     public static boolean isPalindrome(ListNode head) {
+        // [] || [1] 情况
         if (head == null || head.next == null) {
             return true;
         }
-        HashSet<Integer> hashSet = new HashSet<>();
-        int size = 0;
-        ListNode curNode = head;
-        while (curNode != null) {
-            size++;
-            curNode = curNode.next;
+        // [1,2,1] [1,2,2,1]
+        ListNode fast = head;
+        ListNode slow = head;
+        // pre = left link slow = right link
+        ListNode pre = null;
+
+        while (fast != null && fast.next != null) {
+            ListNode next = slow.next;
+            fast = fast.next.next;
+            slow.next = pre;
+            pre = slow;
+            slow = next;
         }
-        int mid = size / 2 + 1;
-        int index = 0;
-        // 1 2  1
-        while (head != null) {
-            index++;
-            if (index != mid && (size & 1) == 1) {
-                continue;
-            }
-            if (!hashSet.add(head.val)) {
-                hashSet.remove(head.val);
-            }
-            System.out.println(head.val);
-            head = head.next;
+        if (fast != null) {
+            slow = slow.next;
         }
-        return hashSet.isEmpty();
+        while (pre != null && slow != null) {
+            if (pre.val != slow.val) {
+                return false;
+            }
+            pre = pre.next;
+            slow = slow.next;
+        }
+        return true;
     }
 }

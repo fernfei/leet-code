@@ -148,6 +148,7 @@ public class CrossList {
 
     /**
      * 删除链表指定元素 迭代方式
+     *
      * @param head
      * @param val
      * @return
@@ -216,12 +217,14 @@ public class CrossList {
         ListNode pre = null;
 
         while (fast != null && fast.next != null) {
+            // 缓存当前迭代元素的下一个链表
             ListNode next = slow.next;
             fast = fast.next.next;
             slow.next = pre;
             pre = slow;
             slow = next;
         }
+        //fast == null 说明这个链表是奇数
         if (fast != null) {
             slow = slow.next;
         }
@@ -233,5 +236,10 @@ public class CrossList {
             slow = slow.next;
         }
         return true;
+    }
+
+    public void deleteNode(ListNode node) {
+        node.val = node.next.val;
+        node.next = node.next.next;
     }
 }

@@ -53,7 +53,7 @@ public class CrossList {
 //        ListNode intersectionNode = getIntersectionNode2(nodeA1, nodeB1);
 //        System.out.printf("");
         ListNode node1 = new ListNode(1);
-        ListNode node2 = new ListNode(2);
+        ListNode node2 = new ListNode(0);
 //        ListNode node3 = new ListNode(2);
         ListNode node4 = new ListNode(1);
         node1.next = node2;
@@ -61,7 +61,9 @@ public class CrossList {
         node2.next = node4;
 //        ListNode listNode = removeElements2(node1, 7);
 //        ListNode listNode1 = reverseList2(node1);
-        boolean palindrome = isPalindrome(node1);
+//        boolean palindrome = isPalindrome(node1);
+        int decimalValue = getDecimalValue(node1);
+        Integer.parseInt("100", 2);
         System.out.println();
     }
 
@@ -242,4 +244,26 @@ public class CrossList {
         node.val = node.next.val;
         node.next = node.next.next;
     }
+
+    public ListNode middleNode(ListNode head) {
+        // [1,2,3,4,5]  [1,2,3,4,5,6] 找出中间节点
+        ListNode fast = head;
+        ListNode slow = head;
+        while (fast != null && fast.next != null) {
+            fast = fast.next.next;
+            slow = slow.next;
+        }
+        return slow;
+    }
+
+    public static int getDecimalValue(ListNode head) {
+        int res = 0;
+        while (head != null) {
+            res <<= 1;
+            res |= head.val;
+            head = head.next;
+        }
+        return res;
+    }
+
 }

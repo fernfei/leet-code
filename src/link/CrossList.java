@@ -64,6 +64,7 @@ public class CrossList {
 //        boolean palindrome = isPalindrome(node1);
         int decimalValue = getDecimalValue(node1);
         Integer.parseInt("100", 2);
+        int[] ints = reversePrint(node1);
         System.out.println();
     }
 
@@ -264,6 +265,28 @@ public class CrossList {
             head = head.next;
         }
         return res;
+    }
+
+    public static int[] reversePrint(ListNode head) {
+        ListNode curNode = head;
+        ListNode preNode = null;
+        int len = 0 ;
+        // 1 3 2
+        while(curNode!=null){
+            ListNode nextNode = curNode.next;
+            curNode.next=preNode;
+            preNode = curNode;
+            curNode = nextNode;
+            len++;
+        }
+        int[]ints = new int[len];
+        int index = 0;
+        while(preNode!=null){
+            ints[index] = preNode.val;
+            preNode = preNode.next;
+            index++;
+        }
+        return ints;
     }
 
 }

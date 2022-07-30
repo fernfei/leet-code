@@ -65,6 +65,36 @@ public class CrossList {
         int decimalValue = getDecimalValue(node1);
         Integer.parseInt("100", 2);
         int[] ints = reversePrint(node1);
+        ListNode head = new ListNode(1);
+        ListNode n2 = new ListNode(2);
+        ListNode n3 = new ListNode(3);
+        ListNode n4 = new ListNode(4);
+        ListNode n5 = new ListNode(5);
+        ListNode n6 = new ListNode(6);
+        ListNode n7 = new ListNode(7);
+        ListNode n8 = new ListNode(8);
+        ListNode n9 = new ListNode(9);
+        ListNode n10 = new ListNode(10);
+        ListNode n11 = new ListNode(11);
+        ListNode n12 = new ListNode(12);
+        ListNode n13 = new ListNode(13);
+        head.next = n2;
+        n2.next = n3;
+        n3.next = n4;
+        n4.next = n5;
+        n5.next = n6;
+        n6.next = n7;
+        n7.next = n8;
+        n8.next = n9;
+        n9.next = n10;
+        n10.next = n11;
+        n11.next = n12;
+        n12.next = n13;
+        n13.next = null;
+
+        ListNode listNode = deleteNodes(head, 1, 3);
+        ListNode listNode1 = mergeTwoLists(new ListNode(2), new ListNode(1));
+
         System.out.println();
     }
 
@@ -270,23 +300,96 @@ public class CrossList {
     public static int[] reversePrint(ListNode head) {
         ListNode curNode = head;
         ListNode preNode = null;
-        int len = 0 ;
+        int len = 0;
         // 1 3 2
-        while(curNode!=null){
+        while (curNode != null) {
             ListNode nextNode = curNode.next;
-            curNode.next=preNode;
+            curNode.next = preNode;
             preNode = curNode;
             curNode = nextNode;
             len++;
         }
-        int[]ints = new int[len];
+        int[] ints = new int[len];
         int index = 0;
-        while(preNode!=null){
+        while (preNode != null) {
             ints[index] = preNode.val;
             preNode = preNode.next;
             index++;
         }
         return ints;
+    }
+
+    public static ListNode deleteNodes(ListNode head, int m, int n) {
+        // 1 2 3 4 5 6 7 8 9 10 11 12 13
+        // 1 2       6 7        11 12
+        int index = 1;
+        ListNode curNode = head;
+        while (curNode != null) {
+            if (index == m) {
+                ListNode temp = curNode;
+                int jump = 0;
+                while (jump <= n && curNode.next != null) {
+                    curNode = curNode.next;
+                    jump++;
+                }
+                temp.next = jump <= n ? null : curNode;
+                index = 0;
+                jump = 0;
+                curNode = temp;
+            }
+            curNode = curNode.next;
+            index++;
+        }
+        return head;
+    }
+
+    public ListNode deleteNode(ListNode head, int val) {
+        if (head.next == null) {
+            return head.val == val ? null : head;
+        }
+        head.next = deleteNode(head.next, val);
+        return head.val == val ? head.next : head;
+    }
+
+    /**
+     * 递归
+     */
+    public static ListNode mergeTwoLists2(ListNode l1, ListNode l2) {
+        //[1,1,1]
+        //[2,3,4]
+        if (l1 == null) {
+            return l2;
+        } else if (l2 == null) {
+            return l1;
+        } else if (l1.val < l2.val) {
+            l1.next = mergeTwoLists2(l1.next, l2);
+            return l1;
+        } else {
+            l2.next = mergeTwoLists2(l1, l2.next);
+            return l2;
+        }
+    }
+
+    /**
+     * 迭代
+     */
+    public static ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+        //[1,1,3]
+        //[2,3,4,5]
+        ListNode headNode = new ListNode(-1);
+        ListNode preNode = headNode;
+        while (l1 != null && l2 != null) {
+            if (l1.val < l2.val) {
+                preNode.next = l1;
+                l1 = l1.next;
+            } else {
+                preNode.next = l2;
+                l2 = l2.next;
+            }
+            preNode = preNode.next;
+        }
+        preNode.next = l1 != null ? l1 : l2;
+        return headNode.next;
     }
 
 }

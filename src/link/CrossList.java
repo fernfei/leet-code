@@ -392,4 +392,66 @@ public class CrossList {
         return headNode.next;
     }
 
+    /**
+     * 剑指 Offer 22. 链表中倒数第k个节点
+     *
+     * @param head [1,2,3,4,5]
+     * @param k    2
+     * @return 结果
+     */
+    public ListNode getKthFromEnd3(ListNode head, int k) {
+        int len = 0;
+        ListNode curNode = head;
+        while (curNode != null) {
+            curNode = curNode.next;
+            len++;
+        }
+        for (int i = 0; i < len && head != null; ++i) {
+            if (i == (len - k)) {
+                return head;
+            }
+            head = head.next;
+        }
+        return null;
+    }
+
+    int index = 0;
+
+    /**
+     * 剑指 Offer 22. 链表中倒数第k个节点
+     *
+     * @param head [1,2,3,4,5]
+     * @param k    2
+     * @return 结果
+     */
+    public ListNode getKthFromEnd2(ListNode head, int k) {
+        if (head == null) {
+            return head;
+        }
+        // res永远返回null
+        ListNode res = getKthFromEnd2(head.next, k);
+        index++;
+        return index == k ? head : res;
+    }
+
+    /**
+     * 剑指 Offer 22. 链表中倒数第k个节点
+     *
+     * @param head [1,2,3,4,5]
+     * @param k    2
+     * @return 结果
+     */
+    public ListNode getKthFromEnd(ListNode head, int k) {
+        ListNode fastNode = head;
+        ListNode slowNode = head;
+        while (fastNode != null && k > 0) {
+            fastNode = fastNode.next;
+            k--;
+        }
+        while (fastNode != null) {
+            fastNode = fastNode.next;
+            slowNode = slowNode.next;
+        }
+        return slowNode;
+    }
 }

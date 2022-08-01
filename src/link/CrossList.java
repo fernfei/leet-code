@@ -94,6 +94,19 @@ public class CrossList {
 
         ListNode listNode = deleteNodes(head, 1, 3);
         ListNode listNode1 = mergeTwoLists(new ListNode(2), new ListNode(1));
+        ListNode next1 = new ListNode(1);
+        ListNode next2 = new ListNode(2);
+        ListNode next3 = new ListNode(3);
+        ListNode next4 = new ListNode(3);
+        ListNode next5 = new ListNode(2);
+        ListNode next6 = new ListNode(1);
+        next1.next = next2;
+        next2.next = next3;
+        next3.next = next4;
+        next4.next = next5;
+        next5.next = next6;
+        ListNode listNode2 = removeDuplicateNodes(next1);
+        String s = addBinary("11", "1");
 
         System.out.println();
     }
@@ -453,5 +466,47 @@ public class CrossList {
             slowNode = slowNode.next;
         }
         return slowNode;
+    }
+
+    public static ListNode removeDuplicateNodes(ListNode head) {
+        if(head == null || head.next == null){
+            return head;
+        }
+        head.next = removeDuplicateNodes(head.next);
+        ListNode temp =new ListNode(-1);
+        temp.next = head.next;
+        ListNode cur = temp;
+        while(cur!=null && cur.next !=null){
+            // 1 2 3 |-1 3 2 1
+            // 1 2 | 3 2 1
+            if(cur.next.val== head.val){
+                cur.next = cur.next.next;
+                head.next =temp.next;
+                return head;
+            }
+            cur=cur.next;
+        }
+        return head;
+    }
+
+
+    public static String addBinary(String a, String b) {
+        StringBuffer ans = new StringBuffer();
+
+        int n = Math.max(a.length(), b.length()), carry = 0;
+        for (int i = 0; i < n; ++i) {
+            carry += i < a.length() ? (a.charAt(a.length() - 1 - i) - '0') : 0;
+            carry += i < b.length() ? (b.charAt(b.length() - 1 - i) - '0') : 0;
+            ans.append((char) (carry % 2 + '0'));
+            carry /= 2;
+        }
+
+        if (carry > 0) {
+            ans.append('1');
+        }
+        ans.reverse();
+
+        return ans.toString();
+
     }
 }

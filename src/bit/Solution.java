@@ -38,16 +38,17 @@ public class Solution {
         if(astr.length() > 26) {
             return false;
         }
-        int[] bit = new int[26];
+        boolean[] bit = new boolean[26];
         for (int i = 0; i < astr.length(); i++) {
             int index = astr.charAt(i) - 'a';
-            if (bit[index] > 0) {
+            if (bit[index]) {
                 return false;
             }
-            bit[index]++;
+            bit[index] = true;
         }
         return true;
     }
+
 
     /**
      * 判断字符串是否是唯一的
@@ -56,5 +57,22 @@ public class Solution {
      */
     public static boolean isUnique2(String astr) {
         return astr.chars().distinct().count() == astr.length();
+    }
+
+    /**
+     * 判断字符串是否是唯一的
+     * @param astr "abcdefg"
+     * @return true
+     */
+    public static boolean isUnique3(String astr) {
+        int mask = 0;
+        for (int i = 0; i < astr.length(); i++) {
+            if ((mask & (1 << astr.charAt(i) - 'a')) != 0) {
+                return false;
+            } else {
+                mask |= 1 << astr.charAt(i) - 'a';
+            }
+        }
+        return true;
     }
 }

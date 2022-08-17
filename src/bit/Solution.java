@@ -13,7 +13,9 @@ public class Solution {
         // 判断字符串是否是排列回文
         boolean code = canPermutePalindrome("9y");
         // 反转二进制
-        int reverseBits = reverseBits(99999999);
+        int reverseBits = reverseBits2(-11);
+        // 位1个数
+        int hammingWeight = hammingWeight(-11);
 
     }
 
@@ -108,6 +110,11 @@ public class Solution {
     private static final int M4 = 0x0f0f0f0f; // 00001111000011110000111100001111
     private static final int M8 = 0x00ff00ff; // 00000000111111110000000011111111
 
+    /**
+     * 反转二进制数 例 1100 结果 0011
+     * @param n 十进制数
+     * @return 反转后的十进制数
+     */
     public static int reverseBits(int n) {
         n = n >>> 1 & M1 | (n & M1) << 1;
         n = n >>> 2 & M2 | (n & M2) << 2;
@@ -116,13 +123,36 @@ public class Solution {
         return n >>> 16 | n << 16;
     }
 
+    /**
+     * 反转二进制数 例 1100 结果 0011
+     * @param n 十进制数
+     * @return 反转后的十进制数
+     */
     public static int reverseBits2(int n) {
         int rev = 0;
-        for (int i = 0; i < 32; i++) {
+        // 1100 0
+        // 110  0
+        // 11   00
+        // 1    001
+        // 0    0011
+        for (int i = 0; i < 32 && n !=0; i++) {
             // 00 & 1
-            rev = rev << 1 & n | 0;
+            rev |= (n & 1) << (31 - i);
+            n >>>= 1;
+        }
+        return rev;
+    }
+
+
+    /**
+     * 一个十进制数的二进制数位1的个数
+     * @param n 1011 结果 3
+     * @return 位1个数
+     */
+    public static int hammingWeight(int n) {
+        for (int i = 0; i < 32; i++) {
 
         }
-        return 1;
+        return -1;
     }
 }

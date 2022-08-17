@@ -112,6 +112,7 @@ public class Solution {
 
     /**
      * 反转二进制数 例 1100 结果 0011
+     *
      * @param n 十进制数
      * @return 反转后的十进制数
      */
@@ -125,6 +126,7 @@ public class Solution {
 
     /**
      * 反转二进制数 例 1100 结果 0011
+     *
      * @param n 十进制数
      * @return 反转后的十进制数
      */
@@ -135,7 +137,7 @@ public class Solution {
         // 11   00
         // 1    001
         // 0    0011
-        for (int i = 0; i < 32 && n !=0; i++) {
+        for (int i = 0; i < 32 && n != 0; i++) {
             // 00 & 1
             rev |= (n & 1) << (31 - i);
             n >>>= 1;
@@ -146,13 +148,17 @@ public class Solution {
 
     /**
      * 一个十进制数的二进制数位1的个数
+     *
      * @param n 1011 结果 3
      * @return 位1个数
      */
     public static int hammingWeight(int n) {
+        int count = 0;
         for (int i = 0; i < 32; i++) {
-
+            if ((n & (1 << i)) == 1) {
+                count++;
+            }
         }
-        return -1;
+        return count;
     }
 }

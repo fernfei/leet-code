@@ -16,6 +16,8 @@ public class Solution {
         int reverseBits = reverseBits2(-11);
         // 位1个数
         int hammingWeight = hammingWeight(-11);
+        boolean aab = canPermutePalindrome1("aab");
+
 
     }
 
@@ -160,5 +162,37 @@ public class Solution {
             }
         }
         return count;
+    }
+
+    public int missingNumber(int[] nums) {
+        int numsSum = 0;
+        int sum = 0;
+        for (int i = 0; i < nums.length; ++i) {
+            numsSum ^= nums[i];
+        }
+        for (int i = 0; i <= nums.length; ++i) {
+            sum ^= i;
+        }
+        return sum ^ numsSum;
+    }
+
+    public char findTheDifference(String s, String t) {
+        int mask = 0;
+        for (int i = 0; i < t.length(); ++i) {
+            mask ^= s.charAt(i) - '0';
+        }
+
+        for (int i = 0; i < t.length(); ++i) {
+            mask ^= t.charAt(i) - '0';
+        }
+        return (char) (mask + '0');
+    }
+
+    public static boolean canPermutePalindrome1(String s) {
+        int mask=0;
+        for (int i = 0; i < s.length(); i++) {
+            mask ^= s.charAt(i) - '0';
+        }
+        return Integer.bitCount(mask)<=1;
     }
 }

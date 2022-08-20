@@ -193,6 +193,7 @@ public class Solution {
         for (int i = 0; i < s.length(); i++) {
             mask ^= s.charAt(i) - '0';
         }
+
         return Integer.bitCount(mask)<=1;
     }
 }

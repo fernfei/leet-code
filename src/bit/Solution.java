@@ -1,6 +1,9 @@
 package bit;
 
 
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * @author hufei
  */
@@ -16,7 +19,8 @@ public class Solution {
         int reverseBits = reverseBits2(-11);
         // 位1个数
         int hammingWeight = hammingWeight(-11);
-        boolean aab = canPermutePalindrome1("aab");
+        // 二进制手表
+        List<String> readBinaryWatch = readBinaryWatch2(1);
 
 
     }
@@ -164,6 +168,11 @@ public class Solution {
         return count;
     }
 
+    /**
+     * 丢失的数字
+     * @param nums 数字数组
+     * @return 丢失的数字
+     */
     public int missingNumber(int[] nums) {
         int numsSum = 0;
         int sum = 0;
@@ -176,6 +185,12 @@ public class Solution {
         return sum ^ numsSum;
     }
 
+    /**
+     * 不同的字符串
+     * @param s aab
+     * @param t aa
+     * @return b
+     */
     public char findTheDifference(String s, String t) {
         int mask = 0;
         for (int i = 0; i < t.length(); ++i) {
@@ -188,12 +203,44 @@ public class Solution {
         return (char) (mask + '0');
     }
 
-    public static boolean canPermutePalindrome1(String s) {
-        int mask=0;
-        for (int i = 0; i < s.length(); i++) {
-            mask ^= s.charAt(i) - '0';
+    /**
+     * 二进制手表
+     * @param turnedOn 二进制手表组合个数
+     * @return 结果
+     */
+    public static List<String> readBinaryWatch(int turnedOn) {
+        List<String> ans=new LinkedList();
+        // 1 2 4 8 hour 0-11
+        // 1 2 4 8 16 32 minutes 0-59
+        for(int i =0;i<12;++i){
+            for(int j=0;j<60;++j){
+                if(Integer.bitCount(i)+Integer.bitCount(j)==turnedOn){
+                    ans.add(i + ":" + (j < 10 ? "0" + j : j));
+                }
+            }
         }
+        return ans;
+    }
 
-        return Integer.bitCount(mask)<=1;
+    public static List<String> readBinaryWatch2(int turnOn) {
+        // 高4位表示 开关闭合状态表示小时 低6位表示分制
+        // 0001 000000
+        // 0010 000000
+        // 0100 000000
+        // 1000 000000
+        // 0000 100000
+        // 0000 010000
+        // 0000 001000
+        // 0000 000100
+        // 0000 000010
+        // 0000 000001
+        List<String> ans = new LinkedList();
+        for (int i = 0; i < 1024; i++) {
+            int h = i >> 6, m = i & 63;
+            if (h < 12 && m < 60 && (Integer.bitCount(i) == turnOn)) {
+                ans.add(h + ":" + (m < 10 ? "0" + m : m));
+            }
+        }
+        return ans;
     }
 }

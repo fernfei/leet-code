@@ -222,6 +222,11 @@ public class Solution {
         return ans;
     }
 
+    /**
+     * 二进制手表
+     * @param turnOn 二进制手表组合个数
+     * @return 结果
+     */
     public static List<String> readBinaryWatch2(int turnOn) {
         // 高4位表示 开关闭合状态表示小时 低6位表示分制
         // 0001 000000
@@ -242,5 +247,25 @@ public class Solution {
             }
         }
         return ans;
+    }
+
+    /**
+     * 十进制转十六进制
+     * @param num 十进制数
+     * @return 十六机制数
+     */
+    public static String toHex(int num) {
+        if (num == 0) {
+            return "0";
+        }
+        StringBuffer sb = new StringBuffer();
+        for (int i = 7; i >= 0; i --) {
+            int val = (num >> (4 * i)) & 0xf;
+            if (sb.length() > 0 || val > 0) {
+                char digit = val < 10 ? (char) ('0' + val) : (char) ('a' + val - 10);
+                sb.append(digit);
+            }
+        }
+        return sb.toString();
     }
 }

@@ -21,7 +21,10 @@ public class Solution {
         int hammingWeight = hammingWeight(-11);
         // 二进制手表
         List<String> readBinaryWatch = readBinaryWatch2(1);
-
+        // 二进制转十六进制
+        String hex = toHex(998);
+        // 数字的补数
+        int complement = findComplement(5);
 
     }
 
@@ -170,6 +173,7 @@ public class Solution {
 
     /**
      * 丢失的数字
+     *
      * @param nums 数字数组
      * @return 丢失的数字
      */
@@ -187,6 +191,7 @@ public class Solution {
 
     /**
      * 不同的字符串
+     *
      * @param s aab
      * @param t aa
      * @return b
@@ -205,16 +210,17 @@ public class Solution {
 
     /**
      * 二进制手表
+     *
      * @param turnedOn 二进制手表组合个数
      * @return 结果
      */
     public static List<String> readBinaryWatch(int turnedOn) {
-        List<String> ans=new LinkedList();
+        List<String> ans = new LinkedList();
         // 1 2 4 8 hour 0-11
         // 1 2 4 8 16 32 minutes 0-59
-        for(int i =0;i<12;++i){
-            for(int j=0;j<60;++j){
-                if(Integer.bitCount(i)+Integer.bitCount(j)==turnedOn){
+        for (int i = 0; i < 12; ++i) {
+            for (int j = 0; j < 60; ++j) {
+                if (Integer.bitCount(i) + Integer.bitCount(j) == turnedOn) {
                     ans.add(i + ":" + (j < 10 ? "0" + j : j));
                 }
             }
@@ -224,6 +230,7 @@ public class Solution {
 
     /**
      * 二进制手表
+     *
      * @param turnOn 二进制手表组合个数
      * @return 结果
      */
@@ -251,6 +258,7 @@ public class Solution {
 
     /**
      * 十进制转十六进制
+     *
      * @param num 十进制数
      * @return 十六机制数
      */
@@ -259,7 +267,7 @@ public class Solution {
             return "0";
         }
         StringBuffer sb = new StringBuffer();
-        for (int i = 7; i >= 0; i --) {
+        for (int i = 7; i >= 0; i--) {
             int val = (num >> (4 * i)) & 0xf;
             if (sb.length() > 0 || val > 0) {
                 char digit = val < 10 ? (char) ('0' + val) : (char) ('a' + val - 10);
@@ -267,5 +275,25 @@ public class Solution {
             }
         }
         return sb.toString();
+    }
+
+    /**
+     * 数字的补数
+     *
+     * @param num 十进制数字
+     * @return 补数
+     */
+    public static int findComplement(int num) {
+        int len = 0;
+        for (int i = 0; i < 31; ++i) {
+            // 101 i==2 111
+            if (num >= (1 << i)) {
+                len = i;
+            } else {
+                break;
+            }
+        }
+        int mask = (1 << (len + 1)) - 1;
+        return num ^ mask;
     }
 }

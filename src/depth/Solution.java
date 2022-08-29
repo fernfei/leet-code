@@ -28,24 +28,40 @@ public class Solution {
      */
     public static List<Integer> inorderTraversal(TreeNode root) {
         List<Integer> res = new ArrayList<>();
-        if (root == null) {
-            return res;
-        }
-
         Stack<TreeNode> stack = new Stack<>();
-        while (root != null) {
-            stack.add(root);
-            root = root.left;
-            if (root == null) {
-                TreeNode pop = stack.pop();
-                res.add(pop.val);
-                root = pop.right;
+        while (root != null || !stack.isEmpty()) {
+            while (root != null) {
+                stack.add(root);
+                root = root.left;
             }
+            TreeNode pop = stack.pop();
+            res.add(pop.val);
+            root = pop.right;
         }
         return res;
     }
 
+    /**
+     * 二叉树的中序遍历
+     *
+     * @param root 二叉树
+     * @return 结果
+     */
+    public static List<Integer> inorderTraversal2(TreeNode root) {
+        List<Integer> res = new ArrayList<>();
+        inorderTraversal(root, res);
+        return res;
+    }
 
+    public static void inorderTraversal(TreeNode root, List<Integer> res) {
+        if (root == null) {
+            return;
+        }
+        inorderTraversal(root.left, res);
+        res.add(root.val);
+        inorderTraversal(root.right, res);
+
+    }
 }
 
 

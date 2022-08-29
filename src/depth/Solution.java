@@ -31,6 +31,7 @@ public class Solution {
         if (root == null) {
             return res;
         }
+
         Stack<TreeNode> stack = new Stack<>();
         while (root != null) {
             stack.add(root);

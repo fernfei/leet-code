@@ -12,12 +12,16 @@ import java.util.Stack;
 public class Solution {
 
     public static void main(String[] args) {
+        // 二叉树中序遍历
         List<Integer> inorderTraversal = inorderTraversal(
                 new TreeNode(
                         2,
                         new TreeNode(3, new TreeNode(1), null),
                         null)
         );
+
+        // 判断两个二叉树是否相等
+        boolean sameTree = isSameTree(new TreeNode(2, new TreeNode(1), new TreeNode(3)), new TreeNode(2, new TreeNode(4), new TreeNode(3)));
     }
 
     /**
@@ -61,6 +65,30 @@ public class Solution {
         res.add(root.val);
         inorderTraversal(root.right, res);
 
+    }
+
+    /**
+     * 判断两个二叉树是否一样
+     *
+     * @param p 二叉树p
+     * @param q 二叉树q
+     * @return 结果
+     */
+    public static boolean isSameTree(TreeNode p, TreeNode q) {
+        //   2          2
+        // 1   3     4    3
+        if (p == null && q == null) return true;
+        if (p == null) return false;
+        if (q == null) return false;
+        // 1.left,4.left
+        boolean resL = isSameTree(p.left, q.left);
+        // 1.right,4.right
+        boolean resR = isSameTree(p.right, q.right);
+        // 1.val != 4.val
+        if (p.val != q.val) {
+            return false;
+        }
+        return resL && resR;
     }
 }
 

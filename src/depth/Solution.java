@@ -2,7 +2,6 @@ package depth;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Queue;
 import java.util.Stack;
 
 /**
@@ -22,6 +21,8 @@ public class Solution {
 
         // 判断两个二叉树是否相等
         boolean sameTree = isSameTree(new TreeNode(2, new TreeNode(1), new TreeNode(3)), new TreeNode(2, new TreeNode(4), new TreeNode(3)));
+
+        isBalanced(new TreeNode(1, new TreeNode(2,new TreeNode(3),null), new TreeNode(2)));
     }
 
     /**
@@ -89,6 +90,53 @@ public class Solution {
             return false;
         }
         return resL && resR;
+    }
+
+    /**
+     * 判断二叉树是否是轴对称
+     * @param root 二叉树
+     * @return true 轴对称
+     */
+    public boolean isSymmetric(TreeNode root) {
+        return isSymmetric(root.left, root.right);
+    }
+
+    /**
+     * 判断二叉树是否是轴对称
+     * @param left 左二叉树
+     * @param right 右二叉树
+     * @return true 轴对称
+     */
+    public boolean isSymmetric(TreeNode left, TreeNode right) {
+        if (left == null && right == null) return true;
+        if (left == null) return false;
+        if (right == null) return false;
+        boolean resL = isSymmetric(left.left, right.right);
+        boolean resR = isSymmetric(left.right, right.left);
+        if (left.val != right.val) {
+            return false;
+        }
+        return resL && resR;
+    }
+
+    public static boolean isBalanced(TreeNode root) {
+        if (root == null) {
+            return true;
+        }
+        int left = dfs(root.left);
+        int right = dfs(root.right);
+        boolean balancedLeft = isBalanced(root.left);
+        boolean balancedRight = isBalanced(root.right);
+        return Math.abs(left - right) <= 1 && balancedLeft && balancedRight;
+    }
+
+    public static int dfs(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        int left = dfs(root.left);
+        int right = dfs(root.right);
+        return (Math.max(left, right)) + 1;
     }
 }
 

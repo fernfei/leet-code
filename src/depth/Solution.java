@@ -1,6 +1,7 @@
 package depth;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
 
@@ -127,6 +128,9 @@ public class Solution {
         int right = dfs(root.right);
         boolean balancedLeft = isBalanced(root.left);
         boolean balancedRight = isBalanced(root.right);
+        List<String> arr = Arrays.asList("12", "@");
+        // arr转换,分隔
+        String s = String.join(",", arr);
         return Math.abs(left - right) <= 1 && balancedLeft && balancedRight;
     }
 

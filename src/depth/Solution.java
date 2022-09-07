@@ -1,9 +1,6 @@
 package depth;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 
 /**
  * 深度优先算法练习题
@@ -128,9 +125,6 @@ public class Solution {
         int right = dfs(root.right);
         boolean balancedLeft = isBalanced(root.left);
         boolean balancedRight = isBalanced(root.right);
-        List<String> arr = Arrays.asList("12", "@");
-        // arr转换,分隔
-        String s = String.join(",", arr);
         return Math.abs(left - right) <= 1 && balancedLeft && balancedRight;
     }
 
@@ -141,6 +135,78 @@ public class Solution {
         int left = dfs(root.left);
         int right = dfs(root.right);
         return (Math.max(left, right)) + 1;
+    }
+
+    /**
+     * 路径总和-根节点到叶子节点总和==目标值
+     * @param root 二叉树
+     * @param targetSum 目标值
+     * @return 是否存在结果
+     */
+    public static boolean hasPathSum(TreeNode root, int targetSum) {
+        //      1
+        //  2       3
+        // 4           5
+        if (root == null) {
+            return false;
+        }
+        if (root.left == null && root.right == null) {
+            return root.val == targetSum;
+        }
+        return hasPathSum(root.left, targetSum - root.val) || hasPathSum(root.right, targetSum - root.val);
+    }
+
+    public List<Integer> preorderTraversal(TreeNode root) {
+        Stack<TreeNode> stack = new Stack<>();
+        List<Integer> res = new ArrayList<>();
+        while (root != null || !stack.isEmpty()) {
+            while (root != null) {
+                stack.add(root);
+                res.add(root.val);
+                root = root.left;
+            }
+            TreeNode pop = stack.pop();
+            root = pop.right;
+        }
+        return res;
+    }
+
+    /**
+     * 后序遍历
+     * @param root 二叉树
+     * @return 结果
+     */
+    public List<Integer> postorderTraversal(TreeNode root) {
+        List<Integer> res = new ArrayList<>();
+        postorderTraversal(root, res);
+        return res;
+    }
+
+    /**
+     * 后序遍历-迭代
+     * @param root 二叉树
+     * @return res 后序遍历结果
+     */
+    public List<Integer> postorderTraversal2(TreeNode root) {
+        Stack<TreeNode> stack = new Stack<>();
+        while (root != null || !stack.isEmpty()) {
+
+        }
+        return null;
+    }
+
+    /**
+     * 后序遍历-递归
+     * @param root 二叉树
+     * @param res 后序遍历结果
+     */
+    public void postorderTraversal(TreeNode root, List<Integer> res) {
+        if (root == null) {
+            return;
+        }
+        postorderTraversal(root.left, res);
+        postorderTraversal(root.right, res);
+        res.add(root.val);
     }
 }
 

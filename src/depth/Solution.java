@@ -344,6 +344,7 @@ public class Solution {
         TreeNode f = null, s = null, pre = null;
         while (root != null || !stack.isEmpty()) {
             while (root != null) {
+
                 stack.push(root);
                 root = root.left;
             }

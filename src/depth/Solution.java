@@ -27,6 +27,10 @@ public class Solution {
         isSymmetric2(new TreeNode(1, new TreeNode(2), new TreeNode(2)));
 
         recoverTree(new TreeNode(1, new TreeNode(3, null, new TreeNode(2)), null));
+
+        pathSum(new TreeNode(5,new TreeNode(4,new TreeNode(11,new TreeNode(7),new TreeNode(2)),null),new TreeNode(8,new TreeNode(13),new TreeNode(4,new TreeNode(5),new TreeNode(1)))),22);
+
+        flatten(new TreeNode(1, new TreeNode(2, new TreeNode(3), new TreeNode(4)), new TreeNode(5, null, new TreeNode(6))));
     }
 
     /**
@@ -368,6 +372,50 @@ public class Solution {
         }
     }
 
+
+    static List<List<Integer>> ret = new LinkedList<List<Integer>>();
+    static Deque<Integer> path = new LinkedList<Integer>();
+
+    public static List<List<Integer>> pathSum(TreeNode root, int targetSum) {
+        dfs(root, targetSum);
+        return ret;
+    }
+
+    public static void dfs(TreeNode root, int targetSum) {
+        if (root == null) {
+            return;
+        }
+        path.offerLast(root.val);
+        targetSum -= root.val;
+        if (root.left == null && root.right == null && targetSum == 0) {
+            ret.add(new LinkedList<Integer>(path));
+        }
+        dfs(root.left, targetSum);
+        dfs(root.right, targetSum);
+        path.pollLast();
+    }
+
+    /**
+     * 二叉树展开为链表
+     * @param root 二叉树
+     */
+    public static void flatten(TreeNode root) {
+        if(root==null){
+            return;
+        }
+        flatten(root.left);
+        flatten(root.right);
+        TreeNode right = root.right;
+        root.right=root.left;
+        root.left = null;
+        // 1 2 3
+        TreeNode rLeaf = root;
+        while (rLeaf.right != null) {
+            rLeaf = rLeaf.right;
+        }
+        rLeaf.right = right;
+
+    }
 }
 
 

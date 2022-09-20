@@ -28,9 +28,13 @@ public class Solution {
 
         recoverTree(new TreeNode(1, new TreeNode(3, null, new TreeNode(2)), null));
 
-        pathSum(new TreeNode(5,new TreeNode(4,new TreeNode(11,new TreeNode(7),new TreeNode(2)),null),new TreeNode(8,new TreeNode(13),new TreeNode(4,new TreeNode(5),new TreeNode(1)))),22);
+        pathSum(new TreeNode(5, new TreeNode(4, new TreeNode(11, new TreeNode(7), new TreeNode(2)), null), new TreeNode(8, new TreeNode(13), new TreeNode(4, new TreeNode(5), new TreeNode(1)))), 22);
 
         flatten(new TreeNode(1, new TreeNode(2, new TreeNode(3), new TreeNode(4)), new TreeNode(5, null, new TreeNode(6))));
+
+        connect(new Node(1, new Node(2, new Node(4), new Node(5), null), new Node(3, new Node(6), new Node(7), null), null));
+
+        connect1(new Node(1, new Node(2, new Node(4), new Node(5), null), new Node(3, null, new Node(7), null), null));
     }
 
     /**
@@ -339,6 +343,7 @@ public class Solution {
 
     /**
      * 恢复搜索二叉树
+     *
      * @param root 二叉树
      */
     public static void recoverTree(TreeNode root) {
@@ -397,16 +402,17 @@ public class Solution {
 
     /**
      * 二叉树展开为链表
+     *
      * @param root 二叉树
      */
     public static void flatten(TreeNode root) {
-        if(root==null){
+        if (root == null) {
             return;
         }
         flatten(root.left);
         flatten(root.right);
         TreeNode right = root.right;
-        root.right=root.left;
+        root.right = root.left;
         root.left = null;
         // 1 2 3
         TreeNode rLeaf = root;
@@ -416,6 +422,80 @@ public class Solution {
         rLeaf.right = right;
 
     }
+
+
+    /**
+     * 填充每个节点的下一个右侧节点指针
+     *
+     * @param root
+     * @return
+     */
+    public static Node connect(Node root) {
+        if (root == null) {
+            return null;
+        }
+        // 4.left
+        if (root.left == null) {
+            return root;
+        }
+        root.left.next = root.right;
+        if (root.next != null) {
+
+            root.right.next = root.next.left;
+        }
+        //2.left
+        connect(root.left);
+        connect(root.right);
+
+        return root;
+    }
+
+    public static Node connect1(Node root) {
+        if (root == null) {
+            return null;
+        }
+        if (root.left == null && root.right == null) {
+            return root;
+        }
+        if (root.left != null && root.right != null) {
+            root.left.next = root.right;
+            if (root.next != null) {
+                if (root.next.left == null) {
+                    root.right.next = root.next.right;
+                }
+                if (root.next.left != null) {
+                    root.right.next = root.next.left;
+                }
+            }
+        }
+        if (root.left != null && root.right == null) {
+            if (root.next != null) {
+                if (root.next.left == null) {
+                    root.left.next = root.next.right;
+                }
+                if (root.next.left != null) {
+                    root.left.next = root.next.left;
+                }
+            }
+        }
+        if (root.left == null && root.right != null) {
+            if (root.next != null) {
+                if (root.next.left == null) {
+                    root.right.next = root.next.right;
+                }
+                if (root.next.left != null) {
+                    root.right.next = root.next.left;
+                }
+            }
+        }
+
+        connect1(root.left);
+        connect1(root.right);
+        return root;
+    }
+
+
+
 }
 
 

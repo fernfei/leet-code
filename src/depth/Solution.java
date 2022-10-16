@@ -9,6 +9,8 @@ import java.util.*;
 public class Solution {
 
     public static void main(String[] args) {
+
+
         // 二叉树中序遍历
         List<Integer> inorderTraversal = inorderTraversal(
                 new TreeNode(
@@ -35,6 +37,8 @@ public class Solution {
         connect(new Node(1, new Node(2, new Node(4), new Node(5), null), new Node(3, new Node(6), new Node(7), null), null));
 
         connect1(new Node(1, new Node(2, new Node(4), new Node(5), null), new Node(3, null, new Node(7), null), null));
+
+        sumNumbers(new TreeNode(1, new TreeNode(2), new TreeNode(3)));
     }
 
     /**
@@ -495,7 +499,24 @@ public class Solution {
     }
 
 
+    /**
+     * 求根节点到叶节点数字之和
+     *
+     * @param root 二叉树
+     * @return 数字之和
+     */
+    public static int sumNumbers(TreeNode root) {
+        return dfs2(root, 0);
+    }
 
+    public static int dfs2(TreeNode root, int pre) {
+        if (root == null) return 0;
+        pre = pre * 10 + root.val;
+        if (root.left == null && root.right == null) {
+            return pre;
+        }
+        return dfs2(root.left, pre) + dfs2(root.right, pre);
+    }
 }
 
 

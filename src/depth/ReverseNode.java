@@ -15,13 +15,15 @@ public class ReverseNode {
         root.left = new TreeNode(2);
         root.right = new TreeNode(3);
         root.left.left = new TreeNode(4);
-        root.left.right = new TreeNode(5);
+        root.right.right = new TreeNode(5);
 
 //        upsideDownBinaryTree(root);
 
-        invertTree(root);
+//        invertTree(root);
+//
+//        levelOrder3(root);
 
-        levelOrder3(root);
+        zigzagLevelOrder2(root);
 
     }
 
@@ -161,7 +163,73 @@ public class ReverseNode {
         }
         List<Integer> integers = res.get(level);
         integers.add(root.val);
-        dfs3(root.left, level+1, res);
-        dfs3(root.right, level+1, res);
+        dfs3(root.left, level + 1, res);
+        dfs3(root.right, level + 1, res);
+    }
+
+    public static List<List<Integer>> zigzagLevelOrder(TreeNode root) {
+        LinkedList<List<Integer>> res = new LinkedList<>();
+        if (root == null) {
+            return res;
+        }
+        LinkedList<TreeNode> queue = new LinkedList<>();
+        queue.add(root);
+        boolean left = true;
+        while (!queue.isEmpty()) {
+            ArrayList<Integer> integers = new ArrayList<>();
+            int size = queue.size();
+            LinkedList<TreeNode> removeQueue = new LinkedList<>();
+            removeQueue.addAll(queue);
+            // [2,3]
+            for (int i = 0; i < size; i++) {
+                int index = left ? i : size - 1 - i;
+                // 反 3
+                TreeNode peek = queue.get(index);
+                integers.add(peek.val);
+                // 正 2
+                TreeNode poll = queue.get(i);
+                if (poll.left != null) {
+                    queue.add(poll.left);
+                }
+                if (poll.right != null) {
+                    queue.add(poll.right);
+                }
+            }
+            queue.removeAll(removeQueue);
+            left = !left;
+            res.add(integers);
+        }
+        return res;
+    }
+
+    public static List<List<Integer>> zigzagLevelOrder2(TreeNode root) {
+        LinkedList<List<Integer>> res = new LinkedList<>();
+        if (root == null) {
+            return res;
+        }
+        LinkedList<TreeNode> queue = new LinkedList<>();
+        queue.add(root);
+        boolean left = true;
+        while (!queue.isEmpty()) {
+            LinkedList<Integer> integers = new LinkedList<>();
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                TreeNode poll = queue.poll();
+                if (left) {
+                    integers.add(poll.val);
+                } else {
+                    integers.offerFirst(poll.val);
+                }
+                if (poll.left != null) {
+                    queue.offerFirst(poll.left);
+                }
+                if (poll.right != null) {
+                    queue.offerFirst(poll.right);
+                }
+            }
+            left = !left;
+            res.add(integers);
+        }
+        return res;
     }
 }
